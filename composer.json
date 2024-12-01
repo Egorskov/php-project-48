@@ -3,7 +3,9 @@
     "description": "project 48",
     "license": "MIT",
     "autoload": {
-
+        "files": [
+            "src/Diff.php"
+        ]
     },
     "authors": [
         {
@@ -21,7 +23,8 @@
     },
     "require": {
         "wp-cli/php-cli-tools": "^0.12.1",
-        "docopt/docopt": "^1.0"
+        "docopt/docopt": "^1.0",
+        "lstrojny/functional-php": "^1.17"
     },
     "scripts": {
         "phpcs": "phpcs",
