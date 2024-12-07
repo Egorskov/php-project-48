@@ -15,13 +15,13 @@ function genDiff($file1, $file2)
         $value1 = array_key_exists($key, $fileParse1) ? normalizeString($fileParse1[$key]) : null;
         $value2 = array_key_exists($key, $fileParse2) ? normalizeString($fileParse2[$key]) : null;
         if (!array_key_exists($key, $fileParse1)) {
-            return [...$acc,"+ {$key}: {$value2}"];
+            return [...$acc,"  + {$key}: {$value2}"];
         } elseif (!array_key_exists($key, $fileParse2)) {
-            return [...$acc,"- {$key}: {$value1}"];
+            return [...$acc,"  - {$key}: {$value1}"];
         } elseif ($value1 != $value2) {
-            return [...$acc,"- {$key}: {$value1}\n+ {$key}: {$value2}"];
+            return [...$acc,"  - {$key}: {$value1}\n  + {$key}: {$value2}"];
         } else {
-            return [...$acc, "  {$key}: $value1"];
+            return [...$acc, "    {$key}: $value1"];
         }
     }, []);
     $result = ['{', ...$arrayForJson, '}'];
