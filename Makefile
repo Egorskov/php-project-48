@@ -13,5 +13,5 @@ lint-fix:
 dump:
 	composer dump-autoload
 
-diff:
-	./bin/gendiff
+gendiff:
+	./bin/gendiff file1.json /Users/egorgorskov/file2.json

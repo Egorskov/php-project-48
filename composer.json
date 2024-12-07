@@ -2,6 +2,7 @@
     "name": "hexlet/code",
     "description": "project 48",
     "license": "MIT",
+    "type": "library",
     "autoload": {
         "files": [
             "src/Diff.php"
