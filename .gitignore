@@ -8,3 +8,4 @@ build
 *.DS_Store
 file1.json
 resultJson.txt
+tests/testontest.php
