@@ -30,6 +30,7 @@
     "scripts": {
         "phpcs": "phpcs",
         "phpcbf": "phpcbf",
+        "phpunit": "vendor/bin/phpunit",
         "test": "phpunit tests"
     }
 }
