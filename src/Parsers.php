@@ -14,12 +14,12 @@ function parser($file)
             //return (array)Yaml::parse(file_get_contents($file), Yaml::PARSE_OBJECT_FOR_MAP);
         case 'yml':
             return (array)Yaml::parse(file_get_contents($file), Yaml::PARSE_OBJECT_FOR_MAP);
-            default:
-                throw new \Exception('Unknown extension  for Parser: ' . $format);
+        default:
+            throw new \Exception('Unknown extension  for Parser: ' . $format);
     }
 }
 
-function getExtension ($file)
+function getExtension($file): string
 {
     return pathinfo($file, PATHINFO_EXTENSION);
 }
