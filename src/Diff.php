@@ -3,12 +3,13 @@
 namespace Differ\Diff;
 
 use function Functional\sort;
+use function Differ\Parsers\parser;
 
-function genDiff($file1, $file2)
+function genDiff($file1, $file2): string
 {
-    $fileParse1 = json_decode(file_get_contents($file1), true);
-    $fileParse2 = json_decode(file_get_contents($file2), true);
-    $allKeys = array_merge(array_keys($fileParse1), array_keys($fileParse2));
+    $fileParse1 = parser($file1);
+    $fileParse2 = parser($file2);
+    $allKeys = [...array_keys($fileParse1), ...array_keys($fileParse2)];
     $uniqueKeys = array_unique($allKeys);
     $keys = sort($uniqueKeys, fn($left, $right) => strcmp($left, $right));
     $arrayForJson = array_reduce($keys, function ($acc, $key) use ($fileParse1, $fileParse2) {
