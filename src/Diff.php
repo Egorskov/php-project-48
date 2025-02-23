@@ -4,33 +4,48 @@ namespace Differ\Diff;
 
 use function Functional\sort;
 use function Differ\Parsers\parser;
+use function Differ\Stylish\formatter;
 
-function genDiff($file1, $file2): string
+function genDiff($file1, $file2, $format = 'stylish'): string
 {
     $fileParse1 = parser($file1);
     $fileParse2 = parser($file2);
-    $allKeys = [...array_keys($fileParse1), ...array_keys($fileParse2)];
-    $uniqueKeys = array_unique($allKeys);
-    $keys = sort($uniqueKeys, fn($left, $right) => strcmp($left, $right));
-    $arrayForJson = array_reduce($keys, function ($acc, $key) use ($fileParse1, $fileParse2) {
-        $value1 = array_key_exists($key, $fileParse1) ? normalizeString($fileParse1[$key]) : null;
-        $value2 = array_key_exists($key, $fileParse2) ? normalizeString($fileParse2[$key]) : null;
-        if (!array_key_exists($key, $fileParse1)) {
-            return [...$acc,"  + {$key}: {$value2}"];
-        } elseif (!array_key_exists($key, $fileParse2)) {
-            return [...$acc,"  - {$key}: {$value1}"];
-        } elseif ($value1 != $value2) {
-            return [...$acc,"  - {$key}: {$value1}\n  + {$key}: {$value2}"];
-        } else {
-            return [...$acc, "    {$key}: $value1"];
-        }
-    }, []);
-    $result = ['{', ...$arrayForJson, '}'];
-    $result = implode("\n", $result);
+    $ast = makeAst($fileParse1, $fileParse2);
+    $result = formatter($ast, $format);
     return $result;
 }
 
-function normalizeString($string): string
+function makeAst($fileParse1, $fileParse2)
 {
-    return str_replace([",", "'", " "], '', var_export($string, true));
+    $allKeys = [...array_keys($fileParse1), ...array_keys($fileParse2)];
+    $uniqueKeys = array_unique($allKeys);
+    $keys = sort($uniqueKeys, fn($left, $right) => strcmp($left, $right));
+    $tree = array_map(function ($key) use ($fileParse1, $fileParse2) {
+        $value1 = array_key_exists($key, $fileParse1) ?? null;
+        $value2 = array_key_exists($key, $fileParse2) ?? null;
+        if (is_array($value1) && is_array($value2)) {
+            return ['status' => 'isArray',
+                'key' => $key,
+                'children' => makeAst($value1,$value2)];
+        }
+        elseif (!array_key_exists($key, $fileParse1)) {
+            return ['status' => 'added',
+                'key' => $key,
+                'value' => $value2];
+        } elseif (!array_key_exists($key, $fileParse2)) {
+            return ['status' => 'deleted',
+                'key' => $key,
+                'value' => $value1];
+        } elseif ($value1 !== $value2) {
+            return ['status' => 'changed',
+                'key' => $key,
+                'deletedValue' => $value1,
+                'addedValue' => $value2];
+        } else {
+            return ['status' => 'unchanged',
+                'key' => $key,
+                'value' => $value1];
+        }
+    }, $keys);
+    return $tree;
 }

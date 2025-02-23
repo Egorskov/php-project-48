@@ -14,7 +14,7 @@ dump:
 	composer dump-autoload
 
 gendiff:
-	./bin/gendiff file1.json /Users/egorgorskov/file2.json
+	./bin/gendiff  tests/fixtures/file1.json tests/fixtures/file2.json
 
 gendiff-yaml:
 	./bin/gendiff tests/fixtures/testfile1.yaml tests/fixtures/testfile2.yml
